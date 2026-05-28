@@ -1,0 +1,28 @@
+name: docker-pull
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout the code
+        uses: actions/checkout@v2
+
+      - name: setupNodejs
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20
+
+      - name: install dependencies
+        run : npm install
+
+      - name: build docker image
+        run: docker build -t ${{secrets.DOCKER_USERNAME}}/docker-image .
+
+      - name: login to docker hub
+        run: docker logi-u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
+
+      - name: push image to the docker hub
+        run: docker push ${{secrets.DOCKER_USERNAME}}/docker-image
